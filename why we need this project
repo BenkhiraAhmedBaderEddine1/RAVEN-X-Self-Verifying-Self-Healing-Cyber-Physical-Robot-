@@ -1,0 +1,59 @@
+why we need this  project 
+
+*************************************************************************************************************************************************************************
+Take a simple example.
+
+v = 0.5 m/s
+
+You give: 
+Encoder = 0.48 m/s
+IMU      = 0.47 m/s
+Current  = normal
+
+Everything is in order.
+But suddenly:
+
+
+Command  = 0.5 m/s
+Encoder  = 0.49 m/s
+IMU      = 0.20 m/s
+Current  = high
+LiDAR    = translation ≈ 0.21 m/s
+
+There is a strong possibility that:
+
+encoder motion ≠ actual body motion
+
+This could be a wheel slip.
+
+Meanwhile:
+Command  = 0.5
+Encoder  = 0
+IMU      = 0
+Current  = very high
+
+Current = very high
+
+The situation is different:
+
+Motor stall / mechanical problem
+
+As for:
+
+
+
+Command  = 0.5
+Encoder  = 0
+IMU      = normal motion
+Current  = normal
+
+
+It could be:
+
+Encoder failure
+
+Therefore:
+
+The sensor alone is not enough.
+
+This is where the concept of Cross-Layer Physical Consistency comes in.
