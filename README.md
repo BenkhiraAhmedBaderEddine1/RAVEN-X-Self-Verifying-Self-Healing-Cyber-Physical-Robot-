@@ -25,3 +25,13 @@ The project is therefore not limited to robotics. It combines embedded systems, 
 The principal research contribution is not the general idea of an autonomous robot, which is already well established. Rather, the contribution is the implementation and experimental evaluation of a specific cross-layer physical-consistency architecture and bounded recovery strategy on a low-cost differential-drive embedded robot. The system is intended to produce reproducible telemetry, controlled fault-injection experiments and quantitative evidence concerning detection latency, diagnosis accuracy, false-alarm rate, recovery success, mission completion and computational overhead.
 
 The platform is also designed as a foundation for future research in edge AI, causal diagnosis, digital-twin-based system identification, adaptive autonomy, formal runtime verification and cooperative multi-robot fault diagnosis.
+
+
+
+
+
+Introduction
+
+
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
