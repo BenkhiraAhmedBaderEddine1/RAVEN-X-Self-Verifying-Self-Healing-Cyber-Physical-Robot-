@@ -1,0 +1,31 @@
+               HIGH-LEVEL INTENT
+                      │
+                      ▼
+                  Command
+                      │
+                      ▼
+                  Motor PWM
+                      │
+                      ▼
+                  Physical Robot
+                 /      |       \
+                /       |        \
+          Encoder      IMU      Current
+             │          │          │
+             └──────────┼──────────┘
+                        ▼
+              PHYSICAL CONSISTENCY
+                      ENGINE
+                        │
+                        ▼
+                  DIAGNOSIS
+                        │
+              ┌─────────┼─────────┐
+              ▼         ▼         ▼
+           NORMAL    DEGRADED   FAULT
+                                  │
+                                  ▼
+                              RECOVERY
+                                  │
+                                  ▼
+                              SAFE STOP
