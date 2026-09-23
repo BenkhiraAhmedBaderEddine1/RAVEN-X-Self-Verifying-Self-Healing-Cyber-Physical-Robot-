@@ -35,3 +35,12 @@ Introduction
 
 
 ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+
+Autonomous mobile robots integrate sensing, actuation, computation, communication and physical interaction within a single cyber-physical system. A failure in one subsystem can propagate across multiple layers and may be difficult to distinguish from an environmental disturbance or cyber anomaly. RAVEN-X proposes a self-verifying, self-diagnosing and self-healing mobile robot architecture based on cross-layer physical consistency.
+
+The proposed platform combines an NVIDIA Jetson high-level computer running ROS 2 with an STM32H743 real-time controller. The robot integrates wheel encoders, inertial sensing, motor-current monitoring, battery monitoring, 2D LiDAR and optional RGB-D perception. A Physical Consistency Engine compares commanded behavior with measured actuator response, inertial motion, electrical state and communication health. Statistical and machine-learning models generate anomaly scores, while a diagnosis layer classifies abnormal conditions and a bounded recovery manager selects degraded operation, sensor isolation, recovery or safe stop.
+
+The system is evaluated through controlled fault-injection experiments covering sensor failures, actuator disturbances, wheel slip, power degradation and communication anomalies. Evaluation metrics include detection latency, false-alarm rate, precision, recall, F1-score, diagnosis accuracy, recovery success rate, mission completion rate and computational overhead.
+
+The main contribution is an implemented and experimentally evaluated cross-layer physical-consistency architecture for a low-cost embedded differential-drive robot. The architecture is designed to support future research in edge artificial intelligence, causal diagnosis, digital-twin-based system identification, formal runtime safety verification and multi-robot cooperative diagnosis.
