@@ -3,7 +3,7 @@
 
 
 
-Description 
+DESCRIPTION
 
 
 
@@ -30,7 +30,7 @@ The platform is also designed as a foundation for future research in edge AI, ca
 
 
 
-Introduction
+INTRODUCTION
 
 
 
