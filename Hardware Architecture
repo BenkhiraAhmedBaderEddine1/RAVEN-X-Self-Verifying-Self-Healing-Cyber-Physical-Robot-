@@ -1,0 +1,116 @@
+
+
+The high-level processor
+NVIDIA Jetson Orin Nano Super 8GB
+
+It will handle:
+
+⟡ ROS 2
+⟡ Nav2
+⟡ SLAM
+⟡ Perception
+⟡ AI
+⟡ Anomaly detection
+⟡ Diagnosis
+⟡ Logging
+⟡ Visualization
+
+I am positioning the Jetson at the high-level layer, while the STM32 remains at the real-time safety/control layer.
+
+JetPack 6.2.1 is built on Jetson Linux 36.4.4 and uses Ubuntu 22.04 as its base OS; therefore, 
+I chose ROS 2 Humble for the Jetson to maintain platform compatibility. ROS 2 Humble is officially supported on Ubuntu 22.04, 
+whereas Jazzy is supported on Ubuntu 24.04 and can be used on a separate development workstation.
+
+
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰 EXPLANATION 🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰     
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰 🔰🔰🔰🔰🔰 🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰
+🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰🔰
+
+1. First: What exactly is Jetson?
+Simply put:
+Jetson is a very compact computer designed for AI and robotics.
+Think of it as:
+A tiny laptop combined with an NVIDIA GPU, Linux, CUDA, AI acceleration, GPIO/USB interfaces, and more—but designed to operate inside a robot.
+The Jetson Orin Nano Super, specifically, features:
+6-core ARM Cortex-A78AE CPU
+NVIDIA Ampere GPU
+1,024 CUDA cores
+32 Tensor cores
+8 GB LPDDR5
+Up to 67 INT8 TOPS (for the "Super" specification)
+17 FP16 TFLOPS (according to NVIDIA's published specifications)
+So, it is not a microcontroller like the STM32.
+This is a very important point.
+2. Why not just use an STM32?
+Because the STM32 excels at:
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+PWM                                                           ┊
+Encoder                                                       ┊
+ADC                                                           ┊
+PID                                                           ┊
+Timers                                                        ┊
+Interrupts                                                    ┊
+Motor control                                                 ┊
+Watchdog                                                      ┊
+Real-time safety                                              ┊
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+
+However, when you say:
+
+"I want to use Camera + AI + ROS2 + SLAM + LiDAR + Computer Vision + Machine Learning..."
+
+...then the STM32 alone is not the right choice.
+
+For example, if you want to run:
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+Camera
+   ↓                                                               ── .✦  
+Object Detection                                                   ── .✦
+   ↓                                                               ── .✦
+Neural Network                                                     ── .✦
+   ↓                                                               ── .✦
+Obstacle recognition                                               ── .✦
+   ↓                                                               ── .✦
+ROS2                                                               ── .✦
+   ↓                                                               ── .✦
+Navigation                                                         ── .✦
+                                                                   ── .✦
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+
+This requires significant computational processing.
+
+This is where Jetson comes in.
+
+3. The key difference between STM32 and Jetson
+
+Think of it this way:
+
+              RAVEN-X
+                 │
+       ┌─────────┴─────────┐
+       │                   │
+    Jetson               STM32
+       │                   │
+   "Brain"             "Reflexes"
+       │                   │
+ AI / ROS2             PID
+ SLAM                  PWM
+ Vision                Encoder
+ Navigation            ADC
+ Diagnosis             Watchdog
+ Planning              Safety
+ Logging               Motor control
+
+
+
+
+
+
+!!!!! to be continue
