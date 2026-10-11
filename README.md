@@ -80,6 +80,7 @@ The platform is also designed as a foundation for future research in edge AI, ca
 ═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
 
 
+
 Autonomous mobile robots integrate sensing, actuation, computation, communication and physical interaction within a single cyber-physical system. A failure in one subsystem can propagate across multiple layers and may be difficult to distinguish from an environmental disturbance or cyber anomaly. RAVEN-X proposes a self-verifying, self-diagnosing and self-healing mobile robot architecture based on cross-layer physical consistency.
 
 The proposed platform combines an NVIDIA Jetson high-level computer running ROS 2 with an STM32H743 real-time controller. The robot integrates wheel encoders, inertial sensing, motor-current monitoring, battery monitoring, 2D LiDAR and optional RGB-D perception. A Physical Consistency Engine compares commanded behavior with measured actuator response, inertial motion, electrical state and communication health. Statistical and machine-learning models generate anomaly scores, while a diagnosis layer classifies abnormal conditions and a bounded recovery manager selects degraded operation, sensor isolation, recovery or safe stop.
