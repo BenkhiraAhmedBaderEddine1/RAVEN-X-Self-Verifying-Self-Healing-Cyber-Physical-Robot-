@@ -644,3 +644,5 @@ Complete the following checks in sequence before normal operation.
 > Do not use a software watchdog as the only protection against motor-driver faults or a failed embedded controller.
 
 
+STILL WORKING ON IT 
+
