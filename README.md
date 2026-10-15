@@ -513,7 +513,7 @@ The following diagram represents functional power distribution, not a complete e
 
 
 flowchart TB
-
+```mermaid
   B["BATTERY PACK"]
     F["MAIN FUSE"]
     E["HARDWARE MOTOR-ENERGY DISCONNECT"]
@@ -551,7 +551,7 @@ flowchart TB
     class J,S,I,C electronics
 
   linkStyle default stroke:#EF4444,stroke-width:2px
-
+```
 
 > [!CAUTION]
 > This is a functional diagram, not a wiring schematic with final ratings. A real build must use the battery, converter, and motor-driver manufacturer's electrical specifications to size the fuse, wire gauge, connectors, and thermal design.
