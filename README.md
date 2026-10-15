@@ -105,7 +105,6 @@ A conventional mobile robot may detect an obstacle and stop. RAVEN-X additionall
 
 1.1 Research objectives
 
-    ```markdown
 ---
 
 ## <img src="https://img.shields.io/badge/01-RESEARCH_OBJECTIVES-EF4444?style=for-the-badge&labelColor=111111" alt="Research Objectives"/>
@@ -162,7 +161,6 @@ Publish the software architecture, configuration, experiment protocol, data sche
 
 1.2 Research questions
 
-     ```markdown
 ---
 
 ## <img src="https://img.shields.io/badge/02-RESEARCH_QUESTIONS-DC2626?style=for-the-badge&labelColor=111111" alt="Research Questions"/>
@@ -182,7 +180,6 @@ Publish the software architecture, configuration, experiment protocol, data sche
 ‎1.3 Hypotheses
 -
 
-    ```markdown
 ---
 
 ## <img src="https://img.shields.io/badge/03-RESEARCH_HYPOTHESES-B91C1C?style=for-the-badge&labelColor=111111" alt="Research Hypotheses"/>
@@ -201,32 +198,54 @@ Publish the software architecture, configuration, experiment protocol, data sche
 
 ```
 
-Introduction
+und the public, guaranteed fault isolation, or immunity to cyberattacks. Those would require additional engineering and evidence.
 
-     ```markdown
 ---
+
+
+5. Introduction
 
 ## <img src="https://img.shields.io/badge/04-INTRODUCTION-EF4444?style=for-the-badge&labelColor=111111" alt="Introduction"/>
 
-ضع هنا نص Introduction كاملًا كما كتبته، بجميع فقراته وأمثلته.
+Autonomous mobile robots integrate mechanical, electrical, computational, and software components within a single cyber-physical system. Their reliability depends not only on the correctness of individual components but also on the consistency of information exchanged between them.
+
+A wheel encoder, for example, measures wheel rotation rather than the absolute motion of the robot body. Under normal traction, wheel rotation can provide a useful estimate of linear displacement. During wheel slip, however, the wheel may rotate without producing the expected body movement. An odometry algorithm that relies exclusively on encoder measurements may consequently produce an incorrect estimate of the robot's position.
+
+A similar ambiguity occurs when a robot slows down unexpectedly. Possible explanations include excessive mechanical load, motor failure, battery-voltage sag, encoder malfunction, communication delay, or an environmental disturbance. A simple current threshold may detect unusual behavior, but it may not determine the underlying cause.
+
+This thesis proposes RAVEN-X, a mobile robotic research platform designed to investigate these problems through cross-layer physical consistency. The system evaluates relationships between commanded velocities, wheel encoder measurements, inertial observations, electrical power, communication health, and optional LiDAR-based motion estimates.
+
+The architecture combines a high-level edge-computing system running ROS 2 with a real-time embedded motor controller. The high-level system performs navigation, logging, anomaly analysis, and diagnosis. The embedded controller executes bounded motor commands and maintains local safety constraints independently of the high-level autonomy stack.
+
+The project follows a staged experimental methodology. Initially, the platform is characterized under healthy operating conditions. Controlled faults are then introduced, one at a time, followed by selected combinations of faults. The resulting measurements are used to calibrate thresholds, evaluate diagnosis methods, and quantify recovery performance.
+
+The research contribution is the specific architecture, implementation, and evaluation of cross-layer consistency and bounded recovery on a low-cost mobile robot. The project does not assume that individual techniques such as sensor fusion, anomaly detection, or runtime monitoring are new. Its novelty must be established through a systematic literature review and a comparison with prior work.
 
 ---
 
+6. Abstract and keywords
+
+   
 ## <img src="https://img.shields.io/badge/05-ABSTRACT-DC2626?style=for-the-badge&labelColor=111111" alt="Abstract"/>
 
-ضع هنا نص Abstract كاملًا دون اختصار.
+RAVEN-X is a research platform for cross-layer fault detection, diagnosis, and bounded recovery in autonomous mobile robots. The system combines a differential-drive mechanical platform, an embedded motor controller, a high-level edge computer, and a heterogeneous sensor suite. Its central component, the Physical Consistency Engine, compares commanded motion with encoder-derived velocity, inertial measurements, electrical current, battery state, communication health, and optional exteroceptive motion estimates.
+
+The proposed architecture uses deterministic embedded control for motor regulation and safety enforcement, while a ROS 2-based high-level system performs sensor integration, anomaly analysis, navigation, and event logging. Fault detection begins with calibrated thresholds and normalized residuals. Statistical and machine-learning methods are added only after a representative dataset has been collected. A diagnosis manager estimates likely fault classes and associates each decision with supporting evidence and an uncertainty level.
+
+A bounded recovery manager selects among normal operation, speed-limited operation, reduced-sensor operation, controlled stop, and operator intervention. Safety-critical functions remain independent of the machine-learning pipeline. Experimental evaluation uses controlled fault injection and compares threshold-only, machine-learning-only, and proposed hybrid approaches.
+
+The evaluation metrics include detection latency, false-alarm rate, precision, recall, F1-score, diagnosis accuracy, recovery success, mission completion, and computational overhead. The intended outcome is a reproducible research platform for investigating the relationship between physical consistency, fault diagnosis, and safe recovery in embedded autonomous robotics.
 
 **Keywords:** Cyber-physical systems, mobile robotics, ROS 2, STM32, edge AI, anomaly detection, fault diagnosis, sensor fusion, runtime safety, fault-tolerant control.
 
----
+
+7. Project scope and limitations
 
 ## <img src="https://img.shields.io/badge/06-PROJECT_SCOPE_AND_LIMITATIONS-B91C1C?style=for-the-badge&labelColor=111111" alt="Project Scope and Limitations"/>
 
-### <img src="https://img.shields.io/badge/INITIAL_SCOPE-16A34A?style=flat-square" alt="Initial Scope"/>
-
 The first implementation targets indoor, low-speed, differential-drive operation on a controlled laboratory floor.
 
-**Included in the initial scope:**
+### <img src="https://img.shields.io/badge/INCLUDED-INITIAL_SCOPE-16A34A?style=flat-square" alt="Included Initial Scope"/>
 
 - Low-level wheel-speed control.
 - Encoder, IMU, current, and battery telemetry.
@@ -237,7 +256,7 @@ The first implementation targets indoor, low-speed, differential-drive operation
 - Controlled recovery and safe-stop states.
 - Reproducible fault-injection experiments.
 
-### <img src="https://img.shields.io/badge/OPTIONAL_FEATURES-0EA5E9?style=flat-square" alt="Optional Features"/>
+### <img src="https://img.shields.io/badge/OPTIONAL-ADVANCED_FEATURES-0EA5E9?style=flat-square" alt="Optional Advanced Features"/>
 
 - LiDAR-based SLAM and autonomous navigation.
 - RGB-D perception.
@@ -246,9 +265,7 @@ The first implementation targets indoor, low-speed, differential-drive operation
 - Digital-twin-based parameter estimation.
 - Causal diagnosis and multi-robot cooperation.
 
-### <img src="https://img.shields.io/badge/LIMITATIONS-F59E0B?style=flat-square" alt="Limitations"/>
+### <img src="https://img.shields.io/badge/IMPORTANT-RESEARCH_LIMITATIONS-F59E0B?style=flat-square" alt="Research Limitations"/>
 
 The project does not initially claim certification for industrial safety, autonomous operation around the public, guaranteed fault isolation, or immunity to cyberattacks. Those would require additional engineering and evidence.
 
----
-```
