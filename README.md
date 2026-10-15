@@ -441,3 +441,199 @@ The development process is divided into three phases. Each phase establishes a s
 > [!TIP]
 > This order reduces integration risk: motor control and hardware safety are verified before the project becomes dependent on Linux, navigation, or AI.
 
+7. Mechanical Design
+   ```markdown
+---
+
+## <img src="https://img.shields.io/badge/07-MECHANICAL_DESIGN-EF4444?style=for-the-badge&labelColor=111111" alt="Mechanical Design"/>
+
+The platform uses a differential-drive configuration with two powered wheels and either a caster or an equivalent support mechanism.
+
+### <img src="https://img.shields.io/badge/DESIGN_PARAMETERS-ENGINEERING_REFERENCE-64748B?style=flat-square&labelColor=111111" alt="Design Parameters"/>
+
+| Parameter | Description | Unit |
+|:---:|---|:---:|
+| \(r\) | Effective wheel radius | m |
+| \(L\) | Distance between left and right wheel contact centres | m |
+| \(N\) | Encoder counts per motor revolution after accounting for quadrature decoding and gearbox ratio | counts/rev |
+| \(G\) | Gearbox ratio, if the encoder is mounted on the motor shaft | ratio |
+| \(m\) | Robot mass | kg |
+| \(v_{\max}\) | Permitted linear speed | m/s |
+| \(\omega_{\max}\) | Permitted angular speed | rad/s |
+
+> [!IMPORTANT]
+> The effective wheel radius should be measured under the actual robot load. Nominal wheel dimensions are not always sufficient because tire deformation and floor contact affect odometry.
+
+### <img src="https://img.shields.io/badge/DIFFERENTIAL_DRIVE-KINEMATIC_MODEL-DC2626?style=flat-square&labelColor=111111" alt="Differential Drive Kinematics"/>
+
+For a differential-drive robot:
+
+**Linear velocity**
+
+$$
+v = \frac{r}{2}(\omega_R+\omega_L)
+$$
+
+**Angular velocity**
+
+$$
+\omega_z = \frac{r}{L}(\omega_R-\omega_L)
+$$
+
+where \(v\) is the estimated linear velocity and \(\omega_z\) is the angular velocity.
+
+Conversely, the target wheel angular velocities are:
+
+**Right wheel**
+
+$$
+\omega_R = \frac{v+\frac{L}{2}\omega_z}{r}
+$$
+
+**Left wheel**
+
+$$
+\omega_L = \frac{v-\frac{L}{2}\omega_z}{r}
+$$
+
+The equations provide wheel-speed targets for the embedded controller. They assume a planar differential-drive model and can become inaccurate during slip or significant wheel-ground interaction.
+
+### <img src="https://img.shields.io/badge/CONTROL_PIPELINE-REFERENCE_FLOW-EF4444?style=flat-square&labelColor=111111" alt="Control Pipeline"/>
+
+```text
+VELOCITY TARGET
+      |
+      v
+LINEAR / ANGULAR VELOCITY
+      |
+      v
+DIFFERENTIAL-DRIVE KINEMATICS
+      |
+      v
+LEFT AND RIGHT WHEEL TARGETS
+      |
+      v
+EMBEDDED PID CONTROLLERS
+      |
+      v
+MOTOR DRIVER
+      |
+      v
+ENCODER FEEDBACK
+```
+
+---
+```
+8. Electrical Architecture and Wiring
+8.1 Power distribution
+
+```markdown
+## <img src="https://img.shields.io/badge/08-ELECTRICAL_ARCHITECTURE-EF4444?style=for-the-badge&labelColor=111111" alt="Electrical Architecture"/>
+
+### <img src="https://img.shields.io/badge/08.1-POWER_DISTRIBUTION-DC2626?style=flat-square&labelColor=111111" alt="Power Distribution"/>
+
+The following diagram represents functional power distribution, not a complete electrical schematic.
+
+```mermaid
+flowchart TB
+
+    B["BATTERY PACK"]
+    F["MAIN FUSE"]
+    E["HARDWARE MOTOR-ENERGY DISCONNECT"]
+    P["MOTOR POWER BUS"]
+    D["MOTOR DRIVER"]
+    LM["LEFT MOTOR"]
+    RM["RIGHT MOTOR"]
+
+    B --> F
+    F --> E
+    E --> P
+    P --> D
+    D --> LM
+    D --> RM
+
+    B --> DC["REGULATED DC/DC CONVERTERS"]
+
+    DC --> J["JETSON INPUT RAIL"]
+    DC --> S["STM32 SUPPLY"]
+    DC --> I["IMU AND SENSOR SUPPLY"]
+    DC --> C["CURRENT / VOLTAGE MONITORS"]
+
+    classDef battery fill:#20202A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+    classDef protection fill:#451414,stroke:#EF4444,color:#FFFFFF,stroke-width:2px
+    classDef power fill:#17212E,stroke:#94A3B8,color:#FFFFFF,stroke-width:2px
+    classDef motor fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
+    classDef converter fill:#12372F,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
+    classDef electronics fill:#153B35,stroke:#5EEAD4,color:#FFFFFF,stroke-width:2px
+
+    class B battery
+    class F,E protection
+    class P,D power
+    class LM,RM motor
+    class DC converter
+    class J,S,I,C electronics
+
+    linkStyle default stroke:#EF4444,stroke-width:2px
+```
+
+> [!CAUTION]
+> This is a functional diagram, not a wiring schematic with final ratings. A real build must use the battery, converter, and motor-driver manufacturer's electrical specifications to size the fuse, wire gauge, connectors, and thermal design.
+
+The emergency-stop control must interrupt the motor-energy path using appropriately rated hardware. A software stop command is useful but is not a substitute for an independent hardware stop mechanism.
+
+- Do not connect a motor directly to a microcontroller GPIO.
+- Do not power the Jetson from an unregulated motor rail.
+- Confirm logic-level compatibility before connecting UART, I²C, SPI, or GPIO signals.
+
+---
+```
+
+8.2 Signal connections
+
+```markdown
+### <img src="https://img.shields.io/badge/08.2-SIGNAL_CONNECTIONS-DC2626?style=flat-square&labelColor=111111" alt="Signal Connections"/>
+
+| Signal | Source | Destination | Purpose |
+|---|---|---|---|
+| Left encoder A/B | Left motor encoder | STM32 timer inputs | Wheel speed and direction |
+| Right encoder A/B | Right motor encoder | STM32 timer inputs | Wheel speed and direction |
+| Left PWM/DIR | STM32 timer/GPIO | Motor driver | Left motor command |
+| Right PWM/DIR | STM32 timer/GPIO | Motor driver | Right motor command |
+| IMU I²C/SPI | IMU | STM32 or Jetson | Inertial measurements |
+| Current monitor bus | Current monitor | STM32 or Jetson | Electrical load measurement |
+| Battery voltage | Divider/monitor | Protected ADC/monitor | Battery telemetry |
+| UART TX/RX | STM32 | Jetson USB-UART | Command and telemetry |
+| Hardware E-stop | Physical switch | Rated motor-energy disconnect | Independent motor stop |
+| LiDAR USB/UART | LiDAR | Jetson | Range measurements |
+| Camera USB/CSI | Camera | Jetson | Image and optional depth data |
+
+> [!NOTE]
+> The table identifies signal functions, not universal pin numbers. Final pins must be selected after choosing the exact STM32 board, motor driver, sensor modules, and Jetson carrier board.
+
+---
+```
+
+8.3 Wiring and electrical verification
+
+```markdown
+### <img src="https://img.shields.io/badge/08.3-ELECTRICAL_VERIFICATION-EF4444?style=flat-square&labelColor=111111" alt="Electrical Verification"/>
+
+Complete the following checks in sequence before normal operation.
+
+- [ ] **01 — Mechanical inspection:** Assemble the chassis and check that both wheels rotate freely with power disconnected.
+- [ ] **02 — Power inspection:** Verify motor-driver power and logic connections separately.
+- [ ] **03 — Continuity inspection:** Check polarity, continuity, and the absence of shorts before connecting the battery.
+- [ ] **04 — Emergency-stop test:** Test the emergency-stop circuit without software running.
+- [ ] **05 — Controller startup:** Power the STM32 with the motor driver disabled.
+- [ ] **06 — Encoder verification:** Verify encoder direction and counts at low wheel speed.
+- [ ] **07 — Sensor verification:** Verify current and voltage readings against a multimeter or suitable reference instrument.
+- [ ] **08 — Communication test:** Test UART communication with the motors disabled.
+- [ ] **09 — Motor test:** Run low-duty-cycle motor tests with the chassis securely supported.
+- [ ] **10 — Safety test:** Test command timeout, watchdog behavior, and stop response.
+- [ ] **11 — Controlled trial:** Conduct initial moving tests at low speed in a clear, controlled area.
+
+> [!CAUTION]
+> Do not use a software watchdog as the only protection against motor-driver faults or a failed embedded controller.
+
+---
+```
