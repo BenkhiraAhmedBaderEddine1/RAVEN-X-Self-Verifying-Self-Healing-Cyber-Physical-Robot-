@@ -269,10 +269,12 @@ The first implementation targets indoor, low-speed, differential-drive operation
 
 The project does not initially claim certification for industrial safety, autonomous operation around the public, guaranteed fault isolation, or immunity to cyberattacks. Those would require additional engineering and evidence.
 
+
+
 %%{init: {"theme":"base","themeVariables":{"background":"#080A0F","primaryColor":"#171B24","primaryTextColor":"#F3F4F6","primaryBorderColor":"#64748B","lineColor":"#EF4444","secondaryColor":"#211116","tertiaryColor":"#101722","fontFamily":"Arial, sans-serif"},"flowchart":{"htmlLabels":true,"curve":"basis","nodeSpacing":32,"rankSpacing":38,"padding":18}}%%
 flowchart TB
 
-   subgraph ROBOT["01  |  PHYSICAL ROBOT"]
+  subgraph ROBOT["01  |  PHYSICAL ROBOT"]
         direction TB
         S["SENSORS & PHYSICAL SYSTEM<br/>━━━━━━━━━━━━━━━━━━<br/>Wheel Encoders · IMU · Motor Current<br/>Battery Voltage · Optional LiDAR / Camera"]
     end
