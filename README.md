@@ -522,19 +522,18 @@ MOTOR DRIVER
 ENCODER FEEDBACK
 ```
 
----
-```
+
 8. Electrical Architecture and Wiring
 8.1 Power distribution
 
-```markdown
+
 ## <img src="https://img.shields.io/badge/08-ELECTRICAL_ARCHITECTURE-EF4444?style=for-the-badge&labelColor=111111" alt="Electrical Architecture"/>
 
 ### <img src="https://img.shields.io/badge/08.1-POWER_DISTRIBUTION-DC2626?style=flat-square&labelColor=111111" alt="Power Distribution"/>
 
 The following diagram represents functional power distribution, not a complete electrical schematic.
 
-```mermaid
+
 flowchart TB
 
     B["BATTERY PACK"]
@@ -574,7 +573,7 @@ flowchart TB
     class J,S,I,C electronics
 
     linkStyle default stroke:#EF4444,stroke-width:2px
-```
+
 
 > [!CAUTION]
 > This is a functional diagram, not a wiring schematic with final ratings. A real build must use the battery, converter, and motor-driver manufacturer's electrical specifications to size the fuse, wire gauge, connectors, and thermal design.
@@ -585,12 +584,11 @@ The emergency-stop control must interrupt the motor-energy path using appropriat
 - Do not power the Jetson from an unregulated motor rail.
 - Confirm logic-level compatibility before connecting UART, I²C, SPI, or GPIO signals.
 
----
-```
+
 
 8.2 Signal connections
 
-```markdown
+
 ### <img src="https://img.shields.io/badge/08.2-SIGNAL_CONNECTIONS-DC2626?style=flat-square&labelColor=111111" alt="Signal Connections"/>
 
 | Signal | Source | Destination | Purpose |
@@ -610,12 +608,9 @@ The emergency-stop control must interrupt the motor-energy path using appropriat
 > [!NOTE]
 > The table identifies signal functions, not universal pin numbers. Final pins must be selected after choosing the exact STM32 board, motor driver, sensor modules, and Jetson carrier board.
 
----
-```
 
 8.3 Wiring and electrical verification
 
-```markdown
 ### <img src="https://img.shields.io/badge/08.3-ELECTRICAL_VERIFICATION-EF4444?style=flat-square&labelColor=111111" alt="Electrical Verification"/>
 
 Complete the following checks in sequence before normal operation.
@@ -635,5 +630,4 @@ Complete the following checks in sequence before normal operation.
 > [!CAUTION]
 > Do not use a software watchdog as the only protection against motor-driver faults or a failed embedded controller.
 
----
-```
+
