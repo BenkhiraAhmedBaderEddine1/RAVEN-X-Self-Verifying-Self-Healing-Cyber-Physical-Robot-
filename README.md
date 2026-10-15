@@ -271,52 +271,51 @@ The project does not initially claim certification for industrial safety, autono
 
 
 
-```mermaid
 flowchart TB
 
-    subgraph ROBOT["01 - PHYSICAL ROBOT"]
+  subgraph ROBOT["01 - PHYSICAL ROBOT"]
         S["SENSORS AND PHYSICAL SYSTEM<br/>Wheel Encoders | IMU | Motor Current<br/>Battery Voltage | Optional LiDAR / Camera"]
     end
 
-    subgraph MCU["02 - REAL-TIME SAFETY LAYER"]
+  subgraph MCU["02 - REAL-TIME SAFETY LAYER"]
         M["STM32 EMBEDDED CONTROLLER<br/>Encoder Capture | PID | PWM<br/>Command Validation | Watchdog<br/>Low-Level Motor Safety Limits"]
     end
 
-    L["UART / CAN COMMUNICATION<br/>Message Validation | Timeouts | Link Health"]
+  L["UART / CAN COMMUNICATION<br/>Message Validation | Timeouts | Link Health"]
 
-    subgraph EDGE["03 - HIGH-LEVEL INTELLIGENCE"]
+  subgraph EDGE["03 - HIGH-LEVEL INTELLIGENCE"]
         J["JETSON EDGE COMPUTER - ROS 2<br/>Sensor Fusion | Logging | AI | Navigation"]
         P["PHYSICAL CONSISTENCY ENGINE<br/>Compare Commands, Wheel Motion,<br/>IMU, Current and Independent Evidence"]
         D["FAULT DIAGNOSIS<br/>Sensor | Actuator | Wheel Slip<br/>Communication | Power | Unknown Fault"]
 
-        J --> P
-        P --> D
-    end
+  J --> P
+  P --> D
+  end
 
-    subgraph REC["04 - BOUNDED RECOVERY"]
+  subgraph REC["04 - BOUNDED RECOVERY"]
         R{"RECOVERY DECISION"}
         N["NORMAL OPERATION"]
         G["DEGRADED MODE<br/>Speed Limit | Reduced Functionality"]
         T["CONTROLLED STOP"]
         F["LATCHED FAULT<br/>Operator Inspection / Reset"]
 
-        R --> N
-        R --> G
-        R --> T
-        R --> F
+  R --> N
+  R --> G
+  R --> T
+  R --> F
     end
 
-    S --> M
-    M <--> L
-    L <--> J
-    D --> R
+  S --> M
+  M <--> L
+  L <--> J
+  D --> R
 
-    N -.-> J
-    G -.-> J
-    T -.-> M
-    F -.-> M
+  N -.-> J
+  G -.-> J
+  T -.-> M
+  F -.-> M
 
-    classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF
+  classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF
     classDef embedded fill:#17212E,stroke:#94A3B8,color:#FFFFFF
     classDef comm fill:#20202A,stroke:#A78BFA,color:#FFFFFF
     classDef edge fill:#12372F,stroke:#2DD4BF,color:#FFFFFF
@@ -327,7 +326,7 @@ flowchart TB
     classDef stop fill:#451414,stroke:#F87171,color:#FFFFFF
     classDef fault fill:#290D14,stroke:#FB7185,color:#FFFFFF
 
-    class S sensors
+  class S sensors
     class M embedded
     class L comm
     class J edge
@@ -338,12 +337,12 @@ flowchart TB
     class T stop
     class F fault
 
-    style ROBOT fill:#0B1420,stroke:#38BDF8,stroke-width:2px
+  style ROBOT fill:#0B1420,stroke:#38BDF8,stroke-width:2px
     style MCU fill:#10151E,stroke:#94A3B8,stroke-width:2px
     style EDGE fill:#0B1917,stroke:#2DD4BF,stroke-width:2px
     style REC fill:#180D12,stroke:#EF4444,stroke-width:2px
 
-    linkStyle default stroke:#EF4444,stroke-width:2px
+  linkStyle default stroke:#EF4444,stroke-width:2px
 ```
 
 1. Hardware components — professional comparison table
