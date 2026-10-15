@@ -271,7 +271,6 @@ The project does not initially claim certification for industrial safety, autono
 
 
 
-```mermaid
 flowchart TD
 
     subgraph ROBOT["01 - PHYSICAL ROBOT"]
