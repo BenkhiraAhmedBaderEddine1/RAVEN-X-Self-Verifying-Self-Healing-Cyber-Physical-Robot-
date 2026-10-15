@@ -345,3 +345,104 @@ flowchart TB
 
     linkStyle default stroke:#EF4444,stroke-width:2px
 ```
+
+1. Hardware components — professional comparison table
+
+```markdown
+---
+
+## <img src="https://img.shields.io/badge/06-HARDWARE_COMPONENTS-EF4444?style=for-the-badge&labelColor=111111" alt="Hardware Components and Their Functions"/>
+
+> [!IMPORTANT]
+> The diagram is a logical architecture, not a complete electrical schematic. In particular, the emergency-stop circuit must act on the motor-energy path independently of ROS 2 and the Jetson.
+
+The following bill of materials is a proposed configuration. Exact part numbers, voltage ratings, motor stall current, connector pinouts, and availability must be checked before purchasing.
+
+### <img src="https://img.shields.io/badge/COMPONENTS-HARDWARE_OVERVIEW-DC2626?style=flat-square&labelColor=111111" alt="Hardware Overview"/>
+
+| Component | Function in RAVEN-X | Advantages | Limitations |
+|---|---|---|---|
+| **NVIDIA Jetson Orin Nano Super 8GB** | High-level computation and optional edge AI | GPU acceleration, Linux, ROS 2, camera processing | Power, heat, software complexity, 8 GB shared memory |
+| **STM32H743 development board** | Embedded control and local safety | Timers, encoder interfaces, ADC, fast control loop | Firmware integration and peripheral mapping required |
+| **Two geared DC motors with quadrature encoders** | Differential-drive locomotion and feedback | Speed measurement, closed-loop control | Backlash, slip, encoder errors, mechanical wear |
+| **Dual-channel motor driver** | Supplies motor power from battery | Hardware PWM/DIR interface | Current and thermal limits; stall current must be considered |
+| **9-axis IMU** | Angular velocity and acceleration measurements | Independent motion evidence | Bias, vibration, drift, calibration errors |
+| **Two current/voltage monitors** | Motor electrical telemetry | Load and stall evidence | Requires correct shunt design and wiring |
+| **Battery monitor/BMS** | Power-state monitoring and battery protection | Helps detect voltage sag and battery faults | Does not replace correctly rated fuses or a safety circuit |
+| **2D LiDAR, optional for Phase 1** | Mapping and external motion evidence | Useful for SLAM and obstacle detection | Cost, driver integration, reflective or transparent surfaces |
+| **RGB-D/stereo camera, optional** | Visual perception and object detection | Enables vision-based extensions | Lighting sensitivity, bandwidth, compute demand |
+| **Emergency-stop switch and power disconnect** | Independent motor-energy isolation | Hardware-level stopping path | Must be designed and verified for the selected electrical system |
+| **DC/DC converters** | Separate regulated logic and computing rails | Cleaner power distribution | Thermal dissipation, transient response, grounding |
+| **Chassis, wheels, brackets** | Mechanical support | Modular prototyping | Alignment and vibration affect measurements |
+| **Fuse, wiring, connectors, mounting hardware** | Electrical and mechanical integration | Serviceability and protection | Incorrect ratings can create hazards |
+
+### <img src="https://img.shields.io/badge/COMPUTING_PLATFORM-JETSON_ORIN_NANO-16A34A?style=flat-square&labelColor=111111" alt="Jetson Platform"/>
+
+The Jetson Orin Nano Super Developer Kit offers four USB 3.2 Type-A ports, a 40-pin expansion header, camera connectors, and an M.2 slot. Those interfaces are useful for prototyping, but the carrier-board specification must be consulted for electrical pin assignments and limits.
+
+### <img src="https://img.shields.io/badge/EMBEDDED_PLATFORM-STM32H743-0EA5E9?style=flat-square&labelColor=111111" alt="STM32 Platform"/>
+
+The STM32H743 offers multiple communication and control peripherals, but the exact timer channels and pins depend on the specific development board and its pin mapping.
+
+---
+```
+2. Recommended build sequence
+
+```markdown
+## <img src="https://img.shields.io/badge/06.1-RECOMMENDED_BUILD_SEQUENCE-EF4444?style=for-the-badge&labelColor=111111" alt="Recommended Build Sequence"/>
+
+The development process is divided into three phases. Each phase establishes a stable foundation for the next.
+
+### <img src="https://img.shields.io/badge/PROTOTYPE_A-MINIMUM_RESEARCH_PLATFORM-16A34A?style=for-the-badge&labelColor=111111" alt="Prototype A"/>
+
+**Objective:** Establish reliable motor control, sensor acquisition, and independent hardware safety.
+
+- [ ] Chassis and two motors.
+- [ ] Motor driver.
+- [ ] STM32 board.
+- [ ] Wheel encoders.
+- [ ] IMU.
+- [ ] Current monitoring.
+- [ ] Battery-voltage monitoring.
+- [ ] Emergency stop.
+- [ ] USB-UART communication.
+
+**Exit criterion:** Verify motor control, telemetry, watchdog behavior, command limits, and the independent emergency-stop path before adding high-level autonomy.
+
+---
+
+### <img src="https://img.shields.io/badge/PROTOTYPE_B-INTEGRATED_AUTONOMY-0EA5E9?style=for-the-badge&labelColor=111111" alt="Prototype B"/>
+
+**Objective:** Integrate high-level computation and autonomous navigation.
+
+- [ ] Add the Jetson.
+- [ ] Configure ROS 2 communication.
+- [ ] Integrate LiDAR.
+- [ ] Implement mapping and localization.
+- [ ] Add navigation.
+- [ ] Connect sensor telemetry to the Physical Consistency Engine.
+
+**Exit criterion:** Validate end-to-end communication, timestamp handling, sensor synchronization, and safe behavior when high-level software becomes unavailable.
+
+---
+
+### <img src="https://img.shields.io/badge/PROTOTYPE_C-ADVANCED_RESEARCH-B91C1C?style=for-the-badge&labelColor=111111" alt="Prototype C"/>
+
+**Objective:** Extend the platform with advanced diagnosis and recovery research.
+
+- [ ] Add a camera.
+- [ ] Optimize AI inference.
+- [ ] Develop temporal diagnosis.
+- [ ] Evaluate advanced recovery policies.
+- [ ] Run reproducible fault-injection experiments.
+- [ ] Compare methods against predefined baselines.
+
+**Exit criterion:** Report detection performance, diagnosis accuracy, recovery outcomes, uncertainty, and computational overhead.
+
+---
+
+> [!TIP]
+> This order reduces integration risk: motor control and hardware safety are verified before the project becomes dependent on Linux, navigation, or AI.
+
+---
+```
