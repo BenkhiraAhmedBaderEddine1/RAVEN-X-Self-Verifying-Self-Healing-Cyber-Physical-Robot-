@@ -101,7 +101,7 @@ A conventional mobile robot may detect an obstacle and stop. RAVEN-X additionall
 
 🛑  The platform uses two principal computing layers.
 
-![image alt](https://github.com/BenkhiraAhmedBaderEddine1/RAVEN-X-Self-Verifying-Self-Healing-Cyber-Physical-Robot-/blob/813d275251a17ecf63a6f794ce841bbf03b5a8e6/photo_2026-10-15_01-37-17.jpg)
+![image alt](https://github.com/BenkhiraAhmedBaderEddine1/RAVEN-X-Self-Verifying-Self-Healing-Cyber-Physical-Robot-/blob/fcae59572a3a19521c270564fb0368f61a374361/photo_2026-10-15_04-06-51.jpg)
 
 1.1 Research objectives
 
