@@ -514,8 +514,10 @@ The following diagram represents functional power distribution, not a complete e
 
 flowchart TB
 
-  ```mermaid
-B["BATTERY PACK"]
+
+```mermaid
+flowchart TB
+    B["BATTERY PACK"]
     F["MAIN FUSE"]
     E["HARDWARE MOTOR-ENERGY DISCONNECT"]
     P["MOTOR POWER BUS"]
@@ -523,36 +525,42 @@ B["BATTERY PACK"]
     LM["LEFT MOTOR"]
     RM["RIGHT MOTOR"]
 
-   B --> F
+    DC["REGULATED DC/DC CONVERTERS"]
+    J["JETSON INPUT RAIL"]
+    S["STM32 SUPPLY"]
+    I["IMU AND SENSOR SUPPLY"]
+    C["CURRENT / VOLTAGE MONITORS"]
+
+    B --> F
     F --> E
     E --> P
     P --> D
     D --> LM
     D --> RM
 
-  B --> DC["REGULATED DC/DC CONVERTERS"]
+    B --> DC
+    DC --> J
+    DC --> S
+    DC --> I
+    DC --> C
 
-  DC --> J["JETSON INPUT RAIL"]
-    DC --> S["STM32 SUPPLY"]
-    DC --> I["IMU AND SENSOR SUPPLY"]
-    DC --> C["CURRENT / VOLTAGE MONITORS"]
-
-  classDef battery fill:#20202A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+    classDef battery fill:#20202A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
     classDef protection fill:#451414,stroke:#EF4444,color:#FFFFFF,stroke-width:2px
     classDef power fill:#17212E,stroke:#94A3B8,color:#FFFFFF,stroke-width:2px
     classDef motor fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
     classDef converter fill:#12372F,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
     classDef electronics fill:#153B35,stroke:#5EEAD4,color:#FFFFFF,stroke-width:2px
 
-  class B battery
+    class B battery
     class F,E protection
     class P,D power
     class LM,RM motor
     class DC converter
     class J,S,I,C electronics
 
-  linkStyle default stroke:#EF4444,stroke-width:2px
-  ```
+    linkStyle default stroke:#94A3B8,stroke-width:2px
+```
+
 
 > [!CAUTION]
 > This is a functional diagram, not a wiring schematic with final ratings. A real build must use the battery, converter, and motor-driver manufacturer's electrical specifications to size the fuse, wire gauge, connectors, and thermal design.
