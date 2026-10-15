@@ -348,8 +348,7 @@ flowchart TB
 
 1. Hardware components — professional comparison table
 
-```markdown
----
+
 
 ## <img src="https://img.shields.io/badge/06-HARDWARE_COMPONENTS-EF4444?style=for-the-badge&labelColor=111111" alt="Hardware Components and Their Functions"/>
 
@@ -384,11 +383,9 @@ The Jetson Orin Nano Super Developer Kit offers four USB 3.2 Type-A ports, a 40-
 
 The STM32H743 offers multiple communication and control peripherals, but the exact timer channels and pins depend on the specific development board and its pin mapping.
 
----
-```
+
 2. Recommended build sequence
 
-```markdown
 ## <img src="https://img.shields.io/badge/06.1-RECOMMENDED_BUILD_SEQUENCE-EF4444?style=for-the-badge&labelColor=111111" alt="Recommended Build Sequence"/>
 
 The development process is divided into three phases. Each phase establishes a stable foundation for the next.
@@ -444,5 +441,3 @@ The development process is divided into three phases. Each phase establishes a s
 > [!TIP]
 > This order reduces integration risk: motor control and hardware safety are verified before the project becomes dependent on Linux, navigation, or AI.
 
----
-```
