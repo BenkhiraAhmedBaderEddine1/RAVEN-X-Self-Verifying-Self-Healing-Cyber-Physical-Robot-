@@ -2,42 +2,6 @@
   <img src="https://capsule-render.vercel.app/api?type=rect&height=260&color=0:08090C,35:171B22,70:7F1D1D,100:EF4444&text=RAVEN-X&fontColor=FFFFFF&fontSize=64&fontAlignY=40&animation=fadeIn&stroke=EF4444&strokeWidth=2" width="100%" alt="RAVEN-X Robotics Banner"/>
 </p>
 
-<p align="center">
-  <strong>
-    A Self-Verifying, Self-Diagnosing and Self-Recovering
-    <br/>
-    Cyber-Physical Mobile Robot
-  </strong>
-  <br/>
-  <sub>Using Cross-Layer Physical Consistency</sub>
-</p>
-
-<p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=15&duration=2600&pause=900&color=EF4444&center=true&vCenter=true&width=900&height=70&lines=AUTONOMOUS+ROBOTICS+%7C+SYSTEM+INTEGRITY;SELF-VERIFICATION+%7C+SELF-DIAGNOSIS;FAULT+DETECTION+%7C+SELF-RECOVERY;CROSS-LAYER+PHYSICAL+CONSISTENCY" alt="RAVEN-X Animated Robotics Tagline"/>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/DOMAIN-CYBER--PHYSICAL_ROBOTICS-EF4444?style=for-the-badge&labelColor=08090C" alt="Cyber-Physical Robotics"/>
-  <img src="https://img.shields.io/badge/CORE-SELF--DIAGNOSIS-FFFFFF?style=for-the-badge&labelColor=171B22" alt="Self-Diagnosis"/>
-  <img src="https://img.shields.io/badge/APPROACH-CROSS--LAYER_CONSISTENCY-B91C1C?style=for-the-badge&labelColor=08090C" alt="Cross-Layer Consistency"/>
-</p>
-
-<p align="center">
-  <code>VERIFY THE STATE.</code>
-  &nbsp;|&nbsp;
-  <code>DIAGNOSE THE FAULT.</code>
-  &nbsp;|&nbsp;
-  <code>RECOVER WITH PURPOSE.</code>
-</p>
-
----
-
-
-
-
-
-
-<!-- ==================== RAVEN-X | RED EDITION ==================== -->
 
 <p align="center">
   <img
