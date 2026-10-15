@@ -103,8 +103,64 @@ A conventional mobile robot may detect an obstacle and stop. RAVEN-X additionall
 
 ![image alt](https://github.com/BenkhiraAhmedBaderEddine1/RAVEN-X-Self-Verifying-Self-Healing-Cyber-Physical-Robot-/blob/813d275251a17ecf63a6f794ce841bbf03b5a8e6/photo_2026-10-15_01-37-17.jpg)
 
+1.1 Research objectives
 
-1.1 Research objectives 
+    ```markdown
+---
+
+## <img src="https://img.shields.io/badge/01-RESEARCH_OBJECTIVES-EF4444?style=for-the-badge&labelColor=111111" alt="Research Objectives"/>
+
+<details open>
+<summary><strong>O1 — System Integration</strong></summary>
+
+Build a differential-drive robot with wheel encoders, inertial sensing, motor-current monitoring, battery monitoring, and optional LiDAR and camera perception.
+
+</details>
+
+<details open>
+<summary><strong>O2 — Physical Consistency</strong></summary>
+
+Develop a method for comparing commanded motion with measured wheel motion and independent body-motion estimates.
+
+</details>
+
+<details open>
+<summary><strong>O3 — Fault Detection</strong></summary>
+
+Detect abnormal operating conditions using thresholds, residual analysis, statistical methods, and machine learning.
+
+</details>
+
+<details open>
+<summary><strong>O4 — Fault Diagnosis</strong></summary>
+
+Distinguish among sensor faults, actuator faults, wheel slip, communication failures, power anomalies, and unknown faults.
+
+</details>
+
+<details open>
+<summary><strong>O5 — Bounded Recovery</strong></summary>
+
+Implement safe responses such as speed reduction, sensor isolation, navigation degradation, controlled stop, and restart of selected non-safety software services.
+
+</details>
+
+<details open>
+<summary><strong>O6 — Experimental Validation</strong></summary>
+
+Compare the proposed system against threshold-only and machine-learning-only baselines using reproducible fault-injection experiments.
+
+</details>
+
+<details open>
+<summary><strong>O7 — Research Reproducibility</strong></summary>
+
+Publish the software architecture, configuration, experiment protocol, data schema, and evaluation methodology.
+
+</details>
+```
+
+1.2 Research questions
 
      ```markdown
 ---
