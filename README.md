@@ -273,17 +273,17 @@ The project does not initially claim certification for industrial safety, autono
 
 flowchart TD
 
-    subgraph ROBOT["01 - PHYSICAL ROBOT"]
+  subgraph ROBOT["01 - PHYSICAL ROBOT"]
         S["SENSORS AND PHYSICAL SYSTEM<br>Encoders | IMU | Motor Current<br>Battery Voltage | Optional LiDAR / Camera"]
     end
 
-    subgraph MCU["02 - EMBEDDED SAFETY"]
+  subgraph MCU["02 - EMBEDDED SAFETY"]
         M["STM32 CONTROLLER<br>Encoder Capture | PID | PWM<br>Command Validation | Watchdog<br>Motor Safety Limits"]
     end
 
-    L["UART / CAN COMMUNICATION<br>Message Validation | Timeouts"]
+  L["UART / CAN COMMUNICATION<br>Message Validation | Timeouts"]
 
-    subgraph EDGE["03 - EDGE INTELLIGENCE"]
+  subgraph EDGE["03 - EDGE INTELLIGENCE"]
         J["JETSON AND ROS 2<br>Sensor Fusion | Logging | Navigation"]
         P["PHYSICAL CONSISTENCY ENGINE<br>Compare Commands and Sensor Evidence"]
         D["FAULT DIAGNOSIS<br>Sensor | Actuator | Slip | Power | Communication"]
@@ -291,7 +291,7 @@ flowchart TD
         P --> D
     end
 
-    subgraph REC["04 - BOUNDED RECOVERY"]
+  subgraph REC["04 - BOUNDED RECOVERY"]
         R{"RECOVERY DECISION"}
         N["NORMAL OPERATION"]
         G["DEGRADED MODE"]
@@ -303,7 +303,7 @@ flowchart TD
         R --> F
     end
 
-    S --> M
+  S --> M
     M <--> L
     L <--> J
     D --> R
@@ -312,7 +312,7 @@ flowchart TD
     T -.-> M
     F -.-> M
 
-    classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF
+  classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF
     classDef embedded fill:#17212E,stroke:#94A3B8,color:#FFFFFF
     classDef comm fill:#20202A,stroke:#A78BFA,color:#FFFFFF
     classDef edge fill:#12372F,stroke:#2DD4BF,color:#FFFFFF
@@ -501,6 +501,7 @@ ENCODER FEEDBACK
 
 
 8. Electrical Architecture and Wiring
+
 8.1 Power distribution
 
 
@@ -513,7 +514,7 @@ The following diagram represents functional power distribution, not a complete e
 
 flowchart TB
 
-    B["BATTERY PACK"]
+  B["BATTERY PACK"]
     F["MAIN FUSE"]
     E["HARDWARE MOTOR-ENERGY DISCONNECT"]
     P["MOTOR POWER BUS"]
@@ -521,35 +522,35 @@ flowchart TB
     LM["LEFT MOTOR"]
     RM["RIGHT MOTOR"]
 
-    B --> F
+   B --> F
     F --> E
     E --> P
     P --> D
     D --> LM
     D --> RM
 
-    B --> DC["REGULATED DC/DC CONVERTERS"]
+  B --> DC["REGULATED DC/DC CONVERTERS"]
 
-    DC --> J["JETSON INPUT RAIL"]
+  DC --> J["JETSON INPUT RAIL"]
     DC --> S["STM32 SUPPLY"]
     DC --> I["IMU AND SENSOR SUPPLY"]
     DC --> C["CURRENT / VOLTAGE MONITORS"]
 
-    classDef battery fill:#20202A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+  classDef battery fill:#20202A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
     classDef protection fill:#451414,stroke:#EF4444,color:#FFFFFF,stroke-width:2px
     classDef power fill:#17212E,stroke:#94A3B8,color:#FFFFFF,stroke-width:2px
     classDef motor fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
     classDef converter fill:#12372F,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
     classDef electronics fill:#153B35,stroke:#5EEAD4,color:#FFFFFF,stroke-width:2px
 
-    class B battery
+  class B battery
     class F,E protection
     class P,D power
     class LM,RM motor
     class DC converter
     class J,S,I,C electronics
 
-    linkStyle default stroke:#EF4444,stroke-width:2px
+  linkStyle default stroke:#EF4444,stroke-width:2px
 
 
 > [!CAUTION]
