@@ -104,4 +104,23 @@ A conventional mobile robot may detect an obstacle and stop. RAVEN-X additionall
 ![image alt](https://github.com/BenkhiraAhmedBaderEddine1/RAVEN-X-Self-Verifying-Self-Healing-Cyber-Physical-Robot-/blob/813d275251a17ecf63a6f794ce841bbf03b5a8e6/photo_2026-10-15_01-37-17.jpg)
 
 
+1.1 Research objectives 
+
+     ```markdown
+---
+
+## <img src="https://img.shields.io/badge/02-RESEARCH_QUESTIONS-DC2626?style=for-the-badge&labelColor=111111" alt="Research Questions"/>
+
+| ID | Research Question |
+|:--:|---|
+| <img src="https://img.shields.io/badge/RQ1-EF4444?style=flat-square" alt="RQ1"/> | Does cross-layer physical consistency improve fault-detection performance compared with independent sensor thresholds? |
+| <img src="https://img.shields.io/badge/RQ2-EF4444?style=flat-square" alt="RQ2"/> | Can independent sensor evidence distinguish wheel slip from encoder failure and motor stall? |
+| <img src="https://img.shields.io/badge/RQ3-EF4444?style=flat-square" alt="RQ3"/> | What are the effects of sampling frequency, sensor synchronization, and communication delay on diagnosis? |
+| <img src="https://img.shields.io/badge/RQ4-EF4444?style=flat-square" alt="RQ4"/> | Can bounded recovery improve mission completion without increasing unsafe behavior? |
+| <img src="https://img.shields.io/badge/RQ5-EF4444?style=flat-square" alt="RQ5"/> | What computational and power overhead is introduced by the proposed diagnosis pipeline? |
+| <img src="https://img.shields.io/badge/RQ6-EF4444?style=flat-square" alt="RQ6"/> | How well does the system generalize to faults and environments absent from its training data? |
+
+```
+
+
 ‎
