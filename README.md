@@ -178,5 +178,77 @@ Publish the software architecture, configuration, experiment protocol, data sche
 
 ```
 
+```
+‎1.3 Hypotheses
+-
 
-‎
+    ```markdown
+---
+
+## <img src="https://img.shields.io/badge/03-RESEARCH_HYPOTHESES-B91C1C?style=for-the-badge&labelColor=111111" alt="Research Hypotheses"/>
+
+> [!NOTE]
+> These are research hypotheses, not established results. Each must be tested against a predefined baseline.
+
+| Hypothesis | Expected research outcome |
+|:--:|---|
+| **H1** | Combining independent physical measurements will reduce some false alarms relative to single-sensor thresholding. |
+| **H2** | A hybrid rule-based and statistical approach will offer more interpretable diagnosis than a classifier operating on isolated measurements. |
+| **H3** | Recovery policies that explicitly account for uncertainty will improve operational robustness compared with unconditional recovery. |
+| **H4** | Diagnosis performance will deteriorate when multiple faults occur simultaneously or when the reference sensors share correlated errors. |
+
+```
+
+```
+
+Introduction
+
+     ```markdown
+---
+
+## <img src="https://img.shields.io/badge/04-INTRODUCTION-EF4444?style=for-the-badge&labelColor=111111" alt="Introduction"/>
+
+ضع هنا نص Introduction كاملًا كما كتبته، بجميع فقراته وأمثلته.
+
+---
+
+## <img src="https://img.shields.io/badge/05-ABSTRACT-DC2626?style=for-the-badge&labelColor=111111" alt="Abstract"/>
+
+ضع هنا نص Abstract كاملًا دون اختصار.
+
+**Keywords:** Cyber-physical systems, mobile robotics, ROS 2, STM32, edge AI, anomaly detection, fault diagnosis, sensor fusion, runtime safety, fault-tolerant control.
+
+---
+
+## <img src="https://img.shields.io/badge/06-PROJECT_SCOPE_AND_LIMITATIONS-B91C1C?style=for-the-badge&labelColor=111111" alt="Project Scope and Limitations"/>
+
+### <img src="https://img.shields.io/badge/INITIAL_SCOPE-16A34A?style=flat-square" alt="Initial Scope"/>
+
+The first implementation targets indoor, low-speed, differential-drive operation on a controlled laboratory floor.
+
+**Included in the initial scope:**
+
+- Low-level wheel-speed control.
+- Encoder, IMU, current, and battery telemetry.
+- A communication bridge between the embedded controller and Jetson.
+- Physical-consistency calculations.
+- Threshold-based anomaly detection.
+- Event logging and dataset generation.
+- Controlled recovery and safe-stop states.
+- Reproducible fault-injection experiments.
+
+### <img src="https://img.shields.io/badge/OPTIONAL_FEATURES-0EA5E9?style=flat-square" alt="Optional Features"/>
+
+- LiDAR-based SLAM and autonomous navigation.
+- RGB-D perception.
+- GPU-accelerated inference.
+- Temporal neural networks.
+- Digital-twin-based parameter estimation.
+- Causal diagnosis and multi-robot cooperation.
+
+### <img src="https://img.shields.io/badge/LIMITATIONS-F59E0B?style=flat-square" alt="Limitations"/>
+
+The project does not initially claim certification for industrial safety, autonomous operation around the public, guaranteed fault isolation, or immunity to cyberattacks. Those would require additional engineering and evidence.
+
+---
+```
