@@ -273,55 +273,81 @@ The project does not initially claim certification for industrial safety, autono
 
 flowchart TD
 
-  subgraph ROBOT["01 - PHYSICAL ROBOT"]
-        S["SENSORS AND PHYSICAL SYSTEM<br>Encoders | IMU | Motor Current<br>Battery Voltage | Optional LiDAR / Camera"]
+
+## Robot Intelligence, Safety and Recovery Architecture
+
+```mermaid
+flowchart TD
+    subgraph ROBOT["01 - PHYSICAL ROBOT"]
+        S["SENSORS AND PHYSICAL SYSTEM<br/>Encoders | IMU | Motor Current<br/>Battery Voltage | Optional LiDAR / Camera"]
     end
 
-  subgraph MCU["02 - EMBEDDED SAFETY"]
-        M["STM32 CONTROLLER<br>Encoder Capture | PID | PWM<br>Command Validation | Watchdog<br>Motor Safety Limits"]
+    subgraph MCU["02 - EMBEDDED SAFETY"]
+        M["STM32 CONTROLLER<br/>Encoder Capture | PID | PWM<br/>Command Validation | Watchdog<br/>Motor Safety Limits"]
     end
 
-  L["UART / CAN COMMUNICATION<br>Message Validation | Timeouts"]
+    L["UART / CAN COMMUNICATION<br/>Message Validation | Timeouts"]
 
-  subgraph EDGE["03 - EDGE INTELLIGENCE"]
-        J["JETSON AND ROS 2<br>Sensor Fusion | Logging | Navigation"]
-        P["PHYSICAL CONSISTENCY ENGINE<br>Compare Commands and Sensor Evidence"]
-        D["FAULT DIAGNOSIS<br>Sensor | Actuator | Slip | Power | Communication"]
+    subgraph EDGE["03 - EDGE INTELLIGENCE"]
+        J["JETSON AND ROS 2<br/>Sensor Fusion | Logging | Navigation"]
+        P["PHYSICAL CONSISTENCY ENGINE<br/>Compare Commands and Sensor Evidence"]
+        D["FAULT DIAGNOSIS<br/>Sensor | Actuator | Slip | Power | Communication"]
+
         J --> P
         P --> D
     end
 
-  subgraph REC["04 - BOUNDED RECOVERY"]
+    subgraph REC["04 - BOUNDED RECOVERY"]
         R{"RECOVERY DECISION"}
         N["NORMAL OPERATION"]
         G["DEGRADED MODE"]
         T["CONTROLLED STOP"]
         F["LATCHED FAULT"]
+
         R --> N
         R --> G
         R --> T
         R --> F
     end
 
-  S --> M
+    S --> M
     M <--> L
     L <--> J
     D --> R
+
     N -.-> J
     G -.-> J
     T -.-> M
     F -.-> M
 
-  classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF
-    classDef embedded fill:#17212E,stroke:#94A3B8,color:#FFFFFF
-    classDef comm fill:#20202A,stroke:#A78BFA,color:#FFFFFF
-    classDef edge fill:#12372F,stroke:#2DD4BF,color:#FFFFFF
-    classDef engine fill:#153B35,stroke:#5EEAD4,color:#FFFFFF
-    classDef decision fill:#241419,stroke:#F87171,color:#FFFFFF
-    classDef safe fill:#123323,stroke:#4ADE80,color:#FFFFFF
-    classDef degraded fill:#3A2A10,stroke:#FBBF24,color:#FFFFFF
-    classDef stop fill:#451414,stroke:#F87171,color:#FFFFFF
-    classDef
+    classDef sensors fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
+    classDef embedded fill:#17212E,stroke:#94A3B8,color:#FFFFFF,stroke-width:2px
+    classDef comm fill:#20202A,stroke:#A78BFA,color:#FFFFFF,stroke-width:2px
+    classDef edge fill:#12372F,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
+    classDef engine fill:#153B35,stroke:#5EEAD4,color:#FFFFFF,stroke-width:2px
+    classDef decision fill:#241419,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+    classDef safe fill:#123323,stroke:#4ADE80,color:#FFFFFF,stroke-width:2px
+    classDef degraded fill:#3A2A10,stroke:#FBBF24,color:#FFFFFF,stroke-width:2px
+    classDef stop fill:#451414,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+    classDef fault fill:#450A0A,stroke:#EF4444,color:#FFFFFF,stroke-width:3px
+
+    class S sensors
+    class M embedded
+    class L comm
+    class J edge
+    class P engine
+    class D decision
+    class R decision
+    class N safe
+    class G degraded
+    class T stop
+    class F fault
+
+    style ROBOT fill:#0B1220,stroke:#38BDF8,stroke-width:2px,color:#FFFFFF
+    style MCU fill:#0B1220,stroke:#94A3B8,stroke-width:2px,color:#FFFFFF
+    style EDGE fill:#0B1220,stroke:#2DD4BF,stroke-width:2px,color:#FFFFFF
+    style REC fill:#0B1220,stroke:#F87171,stroke-width:2px,color:#FFFFFF
+```
 
 1. Hardware components — professional comparison table
 
