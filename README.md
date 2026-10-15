@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&height=260&color=0:08090C,35:171B22,70:7F1D1D,100:EF4444&text=RAVEN-X&fontColor=FFFFFF&fontSize=64&fontAlignY=40&animation=fadeIn&stroke=EF4444&strokeWidth=2" width="100%" alt="RAVEN-X Robotics Banner"/>
-</p>
 
 
 <p align="center">
