@@ -644,5 +644,427 @@ Complete the following checks in sequence before normal operation.
 > Do not use a software watchdog as the only protection against motor-driver faults or a failed embedded controller.
 
 
-STILL WORKING ON IT 
+---
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=venom&height=180&color=0:080808,50:450A0A,100:FF3030&text=SOFTWARE%20ARCHITECTURE&fontColor=FFFFFF&fontSize=34&fontAlignY=55&animation=fadeIn" width="100%" alt="RAVEN-X Software Architecture"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PART_III-SOFTWARE_ARCHITECTURE-FF3030?style=for-the-badge&labelColor=080808" alt="Part III"/>
+  <img src="https://img.shields.io/badge/ROS_2-DISTRIBUTED_ROBOTICS-FFFFFF?style=for-the-badge&labelColor=181818" alt="ROS 2"/>
+  <img src="https://img.shields.io/badge/STM32-EMBEDDED_CONTROL-FF3030?style=for-the-badge&labelColor=080808" alt="STM32"/>
+</p>
+
+<p align="center">
+  <strong>INTELLIGENCE ABOVE. DETERMINISTIC CONTROL BELOW.</strong>
+  <br/>
+  <sub>EDGE COMPUTING · EMBEDDED CONTROL · CROSS-LAYER DIAGNOSIS</sub>
+</p>
+
+---
+
+## <img src="https://img.shields.io/badge/09-SOFTWARE_STACK-FF3030?style=for-the-badge&labelColor=111111" alt="09 Software Stack"/>
+
+The proposed high-level software consists of:
+
+- **Linux on NVIDIA Jetson** — high-level computation and hardware integration.
+- **ROS 2** — distributed robotics software and inter-node communication.
+- **C++** — performance-sensitive ROS 2 nodes.
+- **Python** — diagnosis, data processing, logging, and experimentation.
+- **STM32 firmware** — motor control and local safety supervision.
+- **YAML** — configuration and parameter management.
+- **CSV or a structured database** — experimental records and telemetry.
+- **Git** — version control.
+- **Optional containerization** — reproducible software deployment.
+
+### 09.1 — Version compatibility
+
+Version compatibility is a project requirement, not a minor installation detail. The ROS 2 Humble documentation lists Ubuntu 22.04 64-bit ARM among its supported binary targets.
+
+<p align="center">
+  <a href="https://docs.ros.org/en/humble/">
+    <img src="https://img.shields.io/badge/ROS_2-Humble_Documentation-22314E?style=for-the-badge&logo=ros&logoColor=white" alt="ROS 2 Humble Documentation"/>
+  </a>
+</p>
+
+Before deployment, freeze a compatible combination of JetPack, Ubuntu, ROS 2, drivers, and software packages. Record the selected versions in the thesis and project configuration.
+
+> [!IMPORTANT]
+> Compatibility must be verified for the actual Jetson hardware and software image. Do not assume that every JetPack, Ubuntu, ROS 2, and driver combination is interchangeable.
+
+---
+
+## <img src="https://img.shields.io/badge/10-ROS_2_NODE_ARCHITECTURE-DC2626?style=for-the-badge&labelColor=111111" alt="10 ROS 2 Node Architecture"/>
+
+The ROS 2 architecture separates telemetry acquisition, physical-consistency analysis, fault diagnosis, recovery supervision, and data logging into distinct software components.
+
+### 10.1 — Node architecture matrix
+
+| Node | Responsibility | Example input | Example output |
+|:---|:---|:---|:---|
+| `serial_bridge` | Communication with STM32 | Serialized telemetry | `/raven/telemetry` |
+| `sensor_adapter` | Normalizes sensor messages | IMU, current, and battery data | Standardized telemetry |
+| `consistency_node` | Calculates residuals and consistency indicators | Commands and sensor state | `/raven/consistency` |
+| `diagnosis_node` | Classifies suspected faults | Residuals and health flags | `/raven/diagnosis` |
+| `safety_supervisor` | Applies high-level motion constraints | Requested velocity and system state | Permitted velocity |
+| `logger_node` | Records data and diagnostic events | Telemetry and diagnoses | CSV/database records |
+| `ml_inference_node` | Optional anomaly inference | Feature vector | Anomaly score |
+| `robot_state_publisher` | Publishes robot geometry | Robot description and joint states | TF transforms |
+| LiDAR driver | Publishes range scans | Sensor data | `/scan` |
+| IMU driver | Publishes inertial measurements | IMU packets | `/imu/data` |
+| Navigation stack | Localization and path planning | Map, scans, odometry, and goal | Motion request |
+
+<sub>INTERFACE NOTE: Node names, topic names, and message definitions are proposed conventions. Final interfaces depend on the selected drivers and implementation.</sub>
+
+### 10.2 — End-to-end data flow
+
+```mermaid
+flowchart TB
+    subgraph INPUT["01 / SENSOR INPUT"]
+        S["Wheel Encoders"]
+        I["IMU"]
+        C["Motor Current"]
+        B["Battery Monitor"]
+        L["LiDAR / Camera"]
+    end
+
+    subgraph MCU["02 / EMBEDDED CONTROL"]
+        M["STM32 Firmware"]
+        T["Telemetry Acquisition"]
+        V["Command Validation"]
+        D["Motor Driver"]
+        M --> T
+        V --> D
+    end
+
+    subgraph EDGE["03 / ROS 2 EDGE COMPUTING"]
+        SB["serial_bridge"]
+        SA["sensor_adapter"]
+        PC["Physical Consistency"]
+        AN["Anomaly Detection"]
+        FD["Fault Diagnosis"]
+        RS["Recovery State Machine"]
+        LG["Experiment Logger"]
+
+        SB --> SA
+        SA --> PC
+        PC --> AN
+        AN --> FD
+        FD --> RS
+        PC --> LG
+        FD --> LG
+    end
+
+    CMD["Permitted Motion Request"]
+
+    S --> M
+    I --> M
+    C --> M
+    B --> M
+
+    T --> SB
+    L --> SA
+
+    RS --> CMD
+    CMD --> V
+
+    classDef sensor fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
+    classDef embedded fill:#20202A,stroke:#94A3B8,color:#FFFFFF,stroke-width:2px
+    classDef edge fill:#102D28,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
+    classDef recovery fill:#35151A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+
+    class S,I,C,B,L sensor
+    class M,T,V,D embedded
+    class SB,SA,PC,AN,FD,LG edge
+    class RS,CMD recovery
+
+    style INPUT fill:#090D14,stroke:#38BDF8,color:#FFFFFF
+    style MCU fill:#090D14,stroke:#94A3B8,color:#FFFFFF
+    style EDGE fill:#090D14,stroke:#2DD4BF,color:#FFFFFF
+```
+
+The Jetson-side safety supervisor provides an additional safeguard, but the final embedded controller must still enforce command limits and communication timeouts.
+
+> [!CAUTION]
+> A high-level recovery request is not a substitute for embedded safety enforcement. The STM32 must reject invalid commands and maintain the defined local safe behavior if communication is lost.
+
+---
+
+## <img src="https://img.shields.io/badge/11-COMMUNICATION_PROTOCOL-FF3030?style=for-the-badge&labelColor=111111" alt="11 Communication Protocol"/>
+
+For the first prototype, **USB-UART** is usually simpler to bring up than CAN-FD. CAN can be introduced after the control and telemetry pipeline works reliably.
+
+### 11.1 — Proposed telemetry message
+
+```text
+protocol_version
+message_type
+sequence_number
+timestamp
+left_encoder_count
+right_encoder_count
+left_wheel_speed
+right_wheel_speed
+left_motor_current
+right_motor_current
+battery_voltage
+imu_ax
+imu_ay
+imu_gz
+firmware_state
+fault_flags
+checksum
+```
+
+### 11.2 — Proposed command message
+
+```text
+protocol_version
+message_type
+sequence_number
+command_timestamp
+left_wheel_target
+right_wheel_target
+requested_mode
+command_validity_period
+checksum
+```
+
+### 11.3 — Communication requirements
+
+- [ ] Reject messages with invalid length or checksum.
+- [ ] Reject invalid numeric values, including non-finite values.
+- [ ] Detect duplicate, stale, and out-of-order commands.
+- [ ] Track missing sequence numbers.
+- [ ] Define explicit units and scaling factors.
+- [ ] Include a monotonically increasing sequence number.
+- [ ] Apply a timeout if valid commands stop arriving.
+- [ ] Record communication failures in the event log.
+- [ ] Prevent received commands from overriding embedded speed, acceleration, or hardware safety limits.
+
+### 11.4 — Integrity versus authentication
+
+A checksum detects accidental corruption; it does not authenticate the sender.
+
+If malicious message injection is within the threat model, authenticated communication, key management, replay protection, and access controls must be designed separately.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PROTOCOL_DESIGN-VALIDATE_%7C_MONITOR_%7C_REJECT-FF3030?style=for-the-badge&labelColor=080808" alt="Protocol Design"/>
+</p>
+
+---
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=venom&height=180&color=0:080808,45:450A0A,100:FF2020&text=PHYSICAL%20CONSISTENCY&fontColor=FFFFFF&fontSize=35&fontAlignY=55&animation=fadeIn" width="100%" alt="Physical Consistency Engine"/>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/PART_IV-PHYSICAL_CONSISTENCY_ENGINE-FF3030?style=for-the-badge&labelColor=080808" alt="Part IV"/>
+  <img src="https://img.shields.io/badge/CORE-RESIDUAL_ANALYSIS-FFFFFF?style=for-the-badge&labelColor=181818" alt="Residual Analysis"/>
+</p>
+
+<p align="center">
+  <strong>DETECT THE DEVIATION. EVALUATE THE EVIDENCE.</strong>
+  <br/>
+  <sub>PHYSICAL MODELS · SENSOR CONSISTENCY · CALIBRATED FAULT REASONING</sub>
+</p>
+
+---
+
+## <img src="https://img.shields.io/badge/12-RESEARCH_CONCEPT-DC2626?style=for-the-badge&labelColor=111111" alt="12 Research Concept"/>
+
+The Physical Consistency Engine compares observations that should agree under a specified operating condition.
+
+For example, if the robot is moving on a high-traction floor, wheel-derived forward velocity should broadly agree with an independent body-motion estimate. If wheel speed rises while body motion remains low, the disagreement may indicate wheel slip or a sensor problem.
+
+The system should not simply average every measurement. Measurements have different failure modes, noise characteristics, update rates, and coordinate frames. A diagnosis decision should therefore consider the availability, freshness, uncertainty, and independence of the evidence.
+
+### 12.1 — Physical consistency pipeline
+
+```mermaid
+flowchart TD
+    A["Timestamped Sensor Measurements"]
+    B["Validate Data Availability"]
+    C["Check Freshness and Uncertainty"]
+    D["Evaluate Operating Conditions"]
+    E["Estimate Expected Behavior"]
+    F["Calculate Residuals"]
+    G["Evaluate Persistence"]
+    H["Compare Independent Evidence"]
+    Q{"Evidence Sufficient?"}
+    J["Maintain Monitoring"]
+    K["Generate Fault Hypothesis"]
+    R["Pass Evidence to Recovery Policy"]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+    H --> Q
+    Q -->|No| J
+    Q -->|Yes| K
+    K --> R
+
+    classDef input fill:#102A43,stroke:#38BDF8,color:#FFFFFF,stroke-width:2px
+    classDef analysis fill:#102D28,stroke:#2DD4BF,color:#FFFFFF,stroke-width:2px
+    classDef decision fill:#35151A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+    classDef monitor fill:#3A2A10,stroke:#FBBF24,color:#FFFFFF,stroke-width:2px
+
+    class A,B,C input
+    class D,E,F,G,H,K analysis
+    class Q,R decision
+    class J monitor
+
+    style Q fill:#35151A,stroke:#F87171,color:#FFFFFF,stroke-width:2px
+```
+
+<sub>CONCEPTUAL DESIGN — the actual algorithms, thresholds, and recovery behavior must be established and validated during implementation.</sub>
+
+---
+
+## <img src="https://img.shields.io/badge/13-RESIDUAL_CALCULATION-FF3030?style=for-the-badge&labelColor=111111" alt="13 Residual Calculation"/>
+
+Let \(x_i\) be a measurement and \(\hat{x}_i\) the corresponding expected value. Define a normalized residual:
+
+\[
+r_i = \frac{x_i-\hat{x}_i}{\sigma_i+\epsilon}
+\]
+
+**Where:**
+
+- \(x_i\) — measured value.
+- \(\hat{x}_i\) — predicted or reference value.
+- \(\sigma_i\) — representative uncertainty or noise scale.
+- \(\epsilon > 0\) — small constant that prevents division by zero.
+
+A normalized residual measures disagreement relative to the selected noise or uncertainty scale. Its threshold should be estimated from healthy data and validated using fault experiments.
+
+### 13.1 — Example residuals
+
+<details open>
+<summary><strong>01 / Wheel-speed residual</strong></summary>
+
+\[
+e_{\text{wheel}} =
+v_{\text{encoder}}-v_{\text{reference}}
+\]
+
+Measures disagreement between encoder-derived velocity and an independent reference estimate.
+
+</details>
+
+<details open>
+<summary><strong>02 / Command-tracking residual</strong></summary>
+
+\[
+e_{\text{track}} =
+v_{\text{command}}-v_{\text{encoder}}
+\]
+
+Measures the difference between commanded and encoder-derived velocity. A large residual may be associated with inadequate tracking, increased mechanical load, actuator problems, or encoder faults.
+
+</details>
+
+<details open>
+<summary><strong>03 / Yaw-rate residual</strong></summary>
+
+\[
+e_{\text{yaw}} =
+\omega_{\text{gyro}}-\omega_{\text{odometry}}
+\]
+
+Compares gyroscope-derived yaw rate with the estimate derived from wheel odometry. The measurements must use consistent timestamps, coordinate conventions, and filtering assumptions.
+
+</details>
+
+<details open>
+<summary><strong>04 / Electrical-power residual</strong></summary>
+
+\[
+e_{\text{power}} =
+P_{\text{measured}}-P_{\text{expected}}
+\]
+
+Measures disagreement between measured electrical power and a reference model.
+
+The power model must account for motor speed, load, driver losses, and measurement placement. A simple fixed current threshold is not sufficient to diagnose every motor fault.
+
+</details>
+
+> [!NOTE]
+> Residuals are diagnostic indicators, not unique fault identifiers. Different faults can produce similar residual patterns. Reliable diagnosis requires additional evidence and experimental validation.
+
+---
+
+## <img src="https://img.shields.io/badge/13.2-CONSISTENCY_SCORE-DC2626?style=for-the-badge&labelColor=111111" alt="13.2 Consistency Score"/>
+
+One possible bounded consistency score is:
+
+\[
+C =
+\exp\left(
+-\sum_i w_i
+\min\left(
+\frac{|e_i|}{s_i+\epsilon},
+r_{\max}
+\right)
+\right)
+\]
+
+**Where:**
+
+- \(C\) — consistency score.
+- \(e_i\) — residual \(i\).
+- \(w_i\) — nonnegative weight assigned to residual \(i\).
+- \(s_i\) — normalization scale for residual \(i\).
+- \(\epsilon > 0\) — small constant that prevents division by zero.
+- \(r_{\max}\) — upper limit applied to the normalized residual contribution.
+
+The score lies between zero and one under the stated nonnegative-weight and positive-denominator assumptions. Higher values indicate lower aggregate disagreement under the selected model.
+
+> [!IMPORTANT]
+> This score is an engineering feature, not a probability of robot health. Its meaning depends on the selected residuals, weights, normalization scales, and saturation limit. It must be calibrated and evaluated before any decision threshold is treated as meaningful.
+
+---
+
+## <img src="https://img.shields.io/badge/14-THRESHOLD_CALIBRATION-FF3030?style=for-the-badge&labelColor=111111" alt="14 Threshold Calibration"/>
+
+A threshold is a decision boundary, not a universal physical constant.
+
+For example, a current limit depends on the motor, load, driver, supply voltage, sensor placement, and measurement bandwidth. An IMU residual depends on sensor noise, calibration, filtering, and robot dynamics.
+
+### 14.1 — Calibration workflow
+
+1. **Collect healthy telemetry.** Record representative motor loads, speeds, and operating conditions.
+2. **Repeat healthy trials.** Include expected floor surfaces and battery conditions.
+3. **Estimate residual distributions.** Characterize variation during normal operation.
+4. **Select candidate thresholds.** Use a target false-alarm rate or a justified engineering constraint.
+5. **Collect fault data separately.** Record controlled fault-injection trials with appropriate ground-truth labels.
+6. **Evaluate detection performance.** Measure false positives and missed detections on held-out runs.
+7. **Freeze the thresholds.** Do this before final evaluation to reduce tuning bias.
+8. **Record calibration provenance.** Store threshold values, dataset versions, and calibration settings.
+
+For a residual whose healthy distribution is approximately Gaussian, a threshold based on a multiple of its standard deviation may be a useful initial candidate. The Gaussian assumption must be checked rather than assumed.
+
+### 14.2 — Persistence and hysteresis
+
+Use persistence checks and hysteresis to reduce transient alarms.
+
+For example, an advisory anomaly may require repeated out-of-range samples before it is reported as a persistent fault. However, an independent hardware overcurrent protection must act according to its own electrical safety design and must not wait for a software persistence window.
+
+<p align="center">
+  <img src="https://img.shields.io/badge/RESEARCH_PRINCIPLE-CALIBRATE_%7C_VALIDATE_%7C_REPRODUCE-FF3030?style=for-the-badge&labelColor=080808" alt="Calibration Principle"/>
+</p>
+
+---
+
+<p align="center">
+  <sub>RAVEN-X · CROSS-LAYER PHYSICAL CONSISTENCY · FAULT REASONING · BOUNDED RECOVERY</sub>
+</p>
+
+
 
