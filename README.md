@@ -926,27 +926,6 @@ flowchart TD
 
 ---
 
-## <img src="https://img.shields.io/badge/13-RESIDUAL_CALCULATION-FF3030?style=for-the-badge&labelColor=111111" alt="13 Residual Calculation"/>
-
-Let \(x_i\) be a measurement and \(\hat{x}_i\) the corresponding expected value. Define a normalized residual:
-
-\[
-r_i = \frac{x_i-\hat{x}_i}{\sigma_i+\epsilon}
-\]
-
-**Where:**
-
-- \(x_i\) — measured value.
-- \(\hat{x}_i\) — predicted or reference value.
-- \(\sigma_i\) — representative uncertainty or noise scale.
-- \(\epsilon > 0\) — small constant that prevents division by zero.
-
-A normalized residual measures disagreement relative to the selected noise or uncertainty scale. Its threshold should be estimated from healthy data and validated using fault experiments.
-
-### 13.1 — Example residuals
-
-<details open>
-<summary><strong>01 / Wheel-speed residual</strong></summary>
 
 ### 13 — Normalized Residuals
 
@@ -1007,17 +986,17 @@ The power model must account for motor speed, load, driver losses, and measureme
 
 > **Note**
 >
-> Residuals are diagnostic indicators, not unique fault identifiers. Different faults can produce similar residual patterns. Reliable diagnosis requires additional evidence and experimental
+> Residuals are diagnostic indicators, not unique fault identifiers. Different faults can produce similar residual patterns. Reliable diagnosis requires additional evidence and experimental validation.
 
 ---
 
-## <img src="https://img.shields.io/badge/14-THRESHOLD_CALIBRATION-FF3030?style=for-the-badge&labelColor=111111" alt="14 Threshold Calibration"/>
+### 14 — Threshold Calibration
 
 A threshold is a decision boundary, not a universal physical constant.
 
 For example, a current limit depends on the motor, load, driver, supply voltage, sensor placement, and measurement bandwidth. An IMU residual depends on sensor noise, calibration, filtering, and robot dynamics.
 
-### 14.1 — Calibration workflow
+### 14.1 — Calibration Workflow
 
 1. **Collect healthy telemetry.** Record representative motor loads, speeds, and operating conditions.
 2. **Repeat healthy trials.** Include expected floor surfaces and battery conditions.
@@ -1030,21 +1009,17 @@ For example, a current limit depends on the motor, load, driver, supply voltage,
 
 For a residual whose healthy distribution is approximately Gaussian, a threshold based on a multiple of its standard deviation may be a useful initial candidate. The Gaussian assumption must be checked rather than assumed.
 
-### 14.2 — Persistence and hysteresis
+### 14.2 — Persistence and Hysteresis
 
 Use persistence checks and hysteresis to reduce transient alarms.
 
 For example, an advisory anomaly may require repeated out-of-range samples before it is reported as a persistent fault. However, an independent hardware overcurrent protection must act according to its own electrical safety design and must not wait for a software persistence window.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/RESEARCH_PRINCIPLE-CALIBRATE_%7C_VALIDATE_%7C_REPRODUCE-FF3030?style=for-the-badge&labelColor=080808" alt="Calibration Principle"/>
-</p>
+![Calibration Principle](https://img.shields.io/badge/RESEARCH_PRINCIPLE-CALIBRATE_%7C_VALIDATE_%7C_REPRODUCE-FF3030?style=for-the-badge&labelColor=080808)
 
 ---
 
 <p align="center">
-  <sub>RAVEN-X · CROSS-LAYER PHYSICAL CONSISTENCY · FAULT REASONING · BOUNDED RECOVERY</sub>
+  <strong>RAVEN-X</strong><br>
+  CROSS-LAYER PHYSICAL CONSISTENCY · FAULT REASONING · BOUNDED RECOVERY
 </p>
-
-
-
