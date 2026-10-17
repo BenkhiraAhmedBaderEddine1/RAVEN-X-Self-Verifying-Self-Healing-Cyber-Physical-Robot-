@@ -948,86 +948,66 @@ A normalized residual measures disagreement relative to the selected noise or un
 <details open>
 <summary><strong>01 / Wheel-speed residual</strong></summary>
 
-\[
+### 13 — Normalized Residuals
+
+Let \(x_i\) be a measurement and \(\hat{x}_i\) the corresponding expected value. Define a normalized residual:
+
+$$
+r_i = \frac{x_i - \hat{x}_i}{\sigma_i + \epsilon}
+$$
+
+**Where:**
+
+- \(x_i\) — measured value.
+- \(\hat{x}_i\) — predicted or reference value.
+- \(\sigma_i\) — representative uncertainty or noise scale.
+- \(\epsilon > 0\) — small constant that prevents division by zero.
+
+A normalized residual measures disagreement relative to the selected noise or uncertainty scale. Its threshold should be estimated from healthy data and validated using fault experiments.
+
+### 13.1 — Example Residuals
+
+**01 / Wheel-Speed Residual**
+
+$$
 e_{\text{wheel}} =
-v_{\text{encoder}}-v_{\text{reference}}
-\]
+v_{\text{encoder}} - v_{\text{reference}}
+$$
 
 Measures disagreement between encoder-derived velocity and an independent reference estimate.
 
-</details>
+**02 / Command-Tracking Residual**
 
-<details open>
-<summary><strong>02 / Command-tracking residual</strong></summary>
-
-\[
+$$
 e_{\text{track}} =
-v_{\text{command}}-v_{\text{encoder}}
-\]
+v_{\text{command}} - v_{\text{encoder}}
+$$
 
 Measures the difference between commanded and encoder-derived velocity. A large residual may be associated with inadequate tracking, increased mechanical load, actuator problems, or encoder faults.
 
-</details>
+**03 / Yaw-Rate Residual**
 
-<details open>
-<summary><strong>03 / Yaw-rate residual</strong></summary>
-
-\[
+$$
 e_{\text{yaw}} =
-\omega_{\text{gyro}}-\omega_{\text{odometry}}
-\]
+\omega_{\text{gyro}} - \omega_{\text{odometry}}
+$$
 
 Compares gyroscope-derived yaw rate with the estimate derived from wheel odometry. The measurements must use consistent timestamps, coordinate conventions, and filtering assumptions.
 
-</details>
+**04 / Electrical-Power Residual**
 
-<details open>
-<summary><strong>04 / Electrical-power residual</strong></summary>
-
-\[
+$$
 e_{\text{power}} =
-P_{\text{measured}}-P_{\text{expected}}
-\]
+P_{\text{measured}} - P_{\text{expected}}
+$$
 
 Measures disagreement between measured electrical power and a reference model.
 
 The power model must account for motor speed, load, driver losses, and measurement placement. A simple fixed current threshold is not sufficient to diagnose every motor fault.
 
-</details>
-
-> [!NOTE]
-> Residuals are diagnostic indicators, not unique fault identifiers. Different faults can produce similar residual patterns. Reliable diagnosis requires additional evidence and experimental validation.
-
----
-
-## <img src="https://img.shields.io/badge/13.2-CONSISTENCY_SCORE-DC2626?style=for-the-badge&labelColor=111111" alt="13.2 Consistency Score"/>
-
-One possible bounded consistency score is:
-
-\[
-C =
-\exp\left(
--\sum_i w_i
-\min\left(
-\frac{|e_i|}{s_i+\epsilon},
-r_{\max}
-\right)
-\right)
-\]
-
-**Where:**
-
-- \(C\) — consistency score.
-- \(e_i\) — residual \(i\).
-- \(w_i\) — nonnegative weight assigned to residual \(i\).
-- \(s_i\) — normalization scale for residual \(i\).
-- \(\epsilon > 0\) — small constant that prevents division by zero.
-- \(r_{\max}\) — upper limit applied to the normalized residual contribution.
-
-The score lies between zero and one under the stated nonnegative-weight and positive-denominator assumptions. Higher values indicate lower aggregate disagreement under the selected model.
-
-> [!IMPORTANT]
-> This score is an engineering feature, not a probability of robot health. Its meaning depends on the selected residuals, weights, normalization scales, and saturation limit. It must be calibrated and evaluated before any decision threshold is treated as meaningful.
+> **Note**
+>
+> Residuals are diagnostic indicators, not unique fault identifiers. Different faults can produce similar residual patterns. Reliable diagnosis requires additional evidence and experimental
 
 ---
 
