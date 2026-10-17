@@ -1023,3 +1023,92 @@ For example, an advisory anomaly may require repeated out-of-range samples befor
   <strong>RAVEN-X</strong><br>
   CROSS-LAYER PHYSICAL CONSISTENCY · FAULT REASONING · BOUNDED RECOVERY
 </p>
+
+
+
+# PART V — FAULT DIAGNOSIS AND RECOVERY
+
+---
+
+## 15 — Fault Classes
+
+The initial fault-diagnosis vocabulary defines candidate fault classes, observable evidence, and important sources of ambiguity.
+
+| Fault Class | Possible Evidence | Important Ambiguity |
+|:---|:---|:---|
+| **Encoder Failure** | Frozen counts, discontinuities, or implausible wheel-speed measurements | The wheel may genuinely be stationary |
+| **Motor / Actuator Problem** | High command with low measured speed and unusual current consumption | Excessive mechanical load can produce similar symptoms |
+| **Wheel Slip** | Wheel-derived motion exceeds the estimated body motion | The reference sensor or body-motion estimate may itself be faulty |
+| **IMU Anomaly** | Unexpected bias, saturation, stale samples, or inconsistent angular velocity | Real vibration, impacts, or rapid acceleration may explain the measurements |
+| **Power Degradation** | Voltage sag under load, abnormal current, or reduced actuator performance | Battery state, wiring resistance, and load conditions affect voltage |
+| **Communication Anomaly** | Message timeouts, missing sequence numbers, or irregular update intervals | Bus congestion and software scheduling can produce similar symptoms |
+| **LiDAR / Camera Degradation** | Missing measurements, reduced coverage, or implausible sensor outputs | Reflectivity, lighting, occlusion, and environmental conditions affect sensor quality |
+| **Compute Degradation** | Excessive processing latency, missed deadlines, or high resource utilization | Temporary workload spikes may cause short-lived degradation |
+| **Multiple / Unknown Faults** | Conflicting evidence, unexplained residuals, or insufficient diagnostic confidence | Requires conservative handling and further investigation |
+
+> **Diagnostic Principle**
+>
+> The system must be able to report `UNKNOWN`. Forcing every anomaly into a known fault category can produce false confidence and unsafe recovery decisions.
+
+---
+
+## 16 — Recovery State Machine
+
+The recovery manager coordinates startup checks, normal operation, degraded operation, safe stopping, and fault latching.
+
+```mermaid
+flowchart TD
+    A([BOOT]) --> B[SELF_CHECK]
+
+    B -->|Checks pass| C[NORMAL]
+    B -->|Check failure| F[SAFE_STOP]
+    F --> G[FAULT_LATCHED]
+
+    C -->|Advisory anomaly| D[DEGRADED]
+    C -->|Critical condition| F
+
+    D -->|Evidence clears and checks pass| C
+    D -->|Critical condition| F
+
+    G -->|Authorized reset and checks pass| B
+    G -->|Fault unresolved| G
+
+    classDef normal fill:#101010,stroke:#32CD32,color:#FFFFFF,stroke-width:2px
+    classDef degraded fill:#302600,stroke:#FFB000,color:#FFFFFF,stroke-width:2px
+    classDef critical fill:#300808,stroke:#FF3030,color:#FFFFFF,stroke-width:2px
+    classDef startup fill:#111827,stroke:#60A5FA,color:#FFFFFF,stroke-width:2px
+
+    class C normal
+    class D degraded
+    class F,G critical
+    class A,B startup
+```
+
+A latched fault may require operator acknowledgement or a controlled restart. Resetting the state must not automatically be treated as proof that the underlying fault has been resolved.
+
+### 16.1 — Recovery Actions
+
+| State | System Behavior | Exit Conditions |
+|:---|:---|:---|
+| **NORMAL** | Required sensors and software components satisfy their health criteria; commands remain within validated limits | An anomaly is detected or a critical condition occurs |
+| **DEGRADED** | Reduce speed, limit acceleration, disable a nonessential feature, or request a conservative navigation mode when the remaining sensors are demonstrably sufficient | Evidence clears and health checks pass, or a critical condition requires stopping |
+| **SAFE_STOP** | Command zero velocity and execute the embedded controller's validated stopping behavior | Transition to a latched state or another explicitly validated safety state |
+| **FAULT_LATCHED** | Prevent automatic restart while the fault remains unresolved | Required fault-clearance conditions, authorization, and restart checks are satisfied |
+
+**Safety boundary:** If the situation requires removal of motor power, use the validated hardware safety circuit. A software velocity command alone is not a substitute for independent hardware protection where such protection is required.
+
+### 16.2 — What Self-Recovery Does Not Mean
+
+Self-recovery does not mean the robot physically repairs a broken motor.
+
+It means the system can:
+
+- Isolate a suspect function when isolation is supported by the architecture.
+- Select a validated safe operating mode.
+- Restart a recoverable software component under defined conditions.
+- Reduce motion or stop the robot when continued operation cannot be justified.
+- Record diagnostic evidence for subsequent inspection.
+
+A recovery policy must never disable a safety-critical sensor or ignore an unresolved fault merely to continue a mission.
+
+Recovery is permitted only when the remaining sensing, control, and protection functions are demonstrably sufficient for the selected operating mode.
